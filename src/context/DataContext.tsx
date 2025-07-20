@@ -1,16 +1,24 @@
 import React, { createContext, useContext, useState } from 'react';
+import { personalInfoApi, projectsApi, skillsApi, contactInfoApi } from '../services/api';
+import { useAuth } from './AuthContext';
 import { Project, Skill, ContactInfo, PersonalInfo } from '../types';
 
 interface DataContextType {
   personalInfo: PersonalInfo;
-  updatePersonalInfo: (info: PersonalInfo) => void;
+  updatePersonalInfo: (info: PersonalInfo) => Promise<boolean>;
   projects: Project[];
-  updateProjects: (projects: Project[]) => void;
+  updateProjects: (projects: Project[]) => Promise<boolean>;
+  addProject: (project: Omit<Project, 'id'>) => Promise<boolean>;
+  updateProject: (id: string, project: Omit<Project, 'id'>) => Promise<boolean>;
+  deleteProject: (id: string) => Promise<boolean>;
   frontendSkills: Skill[];
   backendSkills: Skill[];
-  updateSkills: (frontend: Skill[], backend: Skill[]) => void;
+  updateSkills: (frontend: Skill[], backend: Skill[]) => Promise<boolean>;
   contactInfo: ContactInfo;
-  updateContactInfo: (info: ContactInfo) => void;
+  updateContactInfo: (info: ContactInfo) => Promise<boolean>;
+  loading: boolean;
+  error: string | null;
+  fetchAllData: () => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -78,27 +86,208 @@ const initialContactInfo: ContactInfo = {
 };
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { token } = useAuth();
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>(initialPersonalInfo);
   const [projects, setProjects] = useState<Project[]>(initialProjects);
   const [frontendSkills, setFrontendSkills] = useState<Skill[]>(initialFrontendSkills);
   const [backendSkills, setBackendSkills] = useState<Skill[]>(initialBackendSkills);
   const [contactInfo, setContactInfo] = useState<ContactInfo>(initialContactInfo);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const updatePersonalInfo = (info: PersonalInfo) => {
-    setPersonalInfo(info);
+  const fetchAllData = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Fetch all data from API
+      const [personalResponse, projectsResponse, skillsResponse, contactResponse] = await Promise.all([
+        personalInfoApi.get(),
+        projectsApi.getAll(),
+        skillsApi.getAll(),
+        contactInfoApi.get(),
+      ]);
+
+      // Update state with fetched data or keep defaults if API fails
+      if (personalResponse.success && personalResponse.data) {
+        setPersonalInfo(personalResponse.data);
+      }
+
+      if (projectsResponse.success && projectsResponse.data) {
+        setProjects(projectsResponse.data);
+      }
+
+      if (skillsResponse.success && skillsResponse.data) {
+        setFrontendSkills(skillsResponse.data.frontend || initialFrontendSkills);
+        setBackendSkills(skillsResponse.data.backend || initialBackendSkills);
+      }
+
+      if (contactResponse.success && contactResponse.data) {
+        setContactInfo(contactResponse.data);
+      }
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('Failed to fetch data from server');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateProjects = (newProjects: Project[]) => {
+  const updatePersonalInfo = async (info: PersonalInfo): Promise<boolean> => {
+    if (!token) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await personalInfoApi.update(info, token);
+      
+      if (response.success) {
+        setPersonalInfo(info);
+        return true;
+      } else {
+        setError(response.error || 'Failed to update personal info');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error updating personal info:', err);
+      setError('Failed to update personal info');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateProjects = async (newProjects: Project[]): Promise<boolean> => {
+    // This is mainly for bulk updates - individual operations use specific methods
     setProjects(newProjects);
+    return true;
   };
 
-  const updateSkills = (frontend: Skill[], backend: Skill[]) => {
-    setFrontendSkills(frontend);
-    setBackendSkills(backend);
+  const addProject = async (project: Omit<Project, 'id'>): Promise<boolean> => {
+    if (!token) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await projectsApi.create(project, token);
+      
+      if (response.success && response.data) {
+        setProjects(prev => [...prev, response.data]);
+        return true;
+      } else {
+        setError(response.error || 'Failed to create project');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error creating project:', err);
+      setError('Failed to create project');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateContactInfo = (info: ContactInfo) => {
-    setContactInfo(info);
+  const updateProject = async (id: string, project: Omit<Project, 'id'>): Promise<boolean> => {
+    if (!token) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await projectsApi.update(id, project, token);
+      
+      if (response.success) {
+        setProjects(prev => prev.map(p => p.id === id ? { ...project, id } : p));
+        return true;
+      } else {
+        setError(response.error || 'Failed to update project');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error updating project:', err);
+      setError('Failed to update project');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteProject = async (id: string): Promise<boolean> => {
+    if (!token) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await projectsApi.delete(id, token);
+      
+      if (response.success) {
+        setProjects(prev => prev.filter(p => p.id !== id));
+        return true;
+      } else {
+        setError(response.error || 'Failed to delete project');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error deleting project:', err);
+      setError('Failed to delete project');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateSkills = async (frontend: Skill[], backend: Skill[]): Promise<boolean> => {
+    if (!token) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await skillsApi.update({ frontend, backend }, token);
+      
+      if (response.success) {
+        setFrontendSkills(frontend);
+        setBackendSkills(backend);
+        return true;
+      } else {
+        setError(response.error || 'Failed to update skills');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error updating skills:', err);
+      setError('Failed to update skills');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateContactInfo = async (info: ContactInfo): Promise<boolean> => {
+    if (!token) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await contactInfoApi.update(info, token);
+      
+      if (response.success) {
+        setContactInfo(info);
+        return true;
+      } else {
+        setError(response.error || 'Failed to update contact info');
+        return false;
+      }
+    } catch (err) {
+      console.error('Error updating contact info:', err);
+      setError('Failed to update contact info');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const value = {
@@ -106,11 +295,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updatePersonalInfo,
     projects,
     updateProjects,
+    addProject,
+    updateProject,
+    deleteProject,
     frontendSkills,
     backendSkills,
     updateSkills,
     contactInfo,
     updateContactInfo,
+    loading,
+    error,
+    fetchAllData,
   };
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;

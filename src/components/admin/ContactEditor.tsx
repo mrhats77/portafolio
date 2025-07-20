@@ -19,14 +19,14 @@ const ContactEditor: React.FC = () => {
     e.preventDefault();
     setIsSaving(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    const success = await updateContactInfo(formData);
     
-    updateContactInfo(formData);
     setIsSaving(false);
-    setSaved(true);
     
-    setTimeout(() => setSaved(false), 3000);
+    if (success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }
   };
 
   return (

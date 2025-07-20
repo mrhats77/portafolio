@@ -4,7 +4,7 @@ import { Plus, Edit, Trash2, Save, X, Briefcase } from 'lucide-react';
 import { Project } from '../../types';
 
 const ProjectsEditor: React.FC = () => {
-  const { projects, updateProjects } = useData();
+  const { projects, addProject, updateProject, deleteProject } = useData();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -57,30 +57,24 @@ const ProjectsEditor: React.FC = () => {
     e.preventDefault();
     setIsSaving(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    let success = false;
 
     if (isCreating) {
-      const newProject: Project = {
-        ...formData,
-        id: Date.now().toString(),
-      };
-      updateProjects([...projects, newProject]);
+      success = await addProject(formData);
     } else if (editingProject) {
-      const updatedProjects = projects.map(project =>
-        project.id === editingProject.id ? { ...formData, id: editingProject.id } : project
-      );
-      updateProjects(updatedProjects);
+      success = await updateProject(editingProject.id, formData);
     }
 
     setIsSaving(false);
-    handleCancel();
+    
+    if (success) {
+      handleCancel();
+    }
   };
 
   const handleDelete = async (projectId: string) => {
     if (window.confirm('Are you sure you want to delete this project?')) {
-      const updatedProjects = projects.filter(project => project.id !== projectId);
-      updateProjects(updatedProjects);
+      await deleteProject(projectId);
     }
   };
 

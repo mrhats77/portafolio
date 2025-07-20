@@ -47,39 +47,41 @@ const SkillsEditor: React.FC = () => {
     e.preventDefault();
     setIsSaving(true);
 
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    let success = false;
 
     if (isCreating) {
       if (isCreating === 'frontend') {
-        updateSkills([...frontendSkills, formData], backendSkills);
+        success = await updateSkills([...frontendSkills, formData], backendSkills);
       } else {
-        updateSkills(frontendSkills, [...backendSkills, formData]);
+        success = await updateSkills(frontendSkills, [...backendSkills, formData]);
       }
     } else if (editingSkill) {
       if (editingSkill.type === 'frontend') {
         const updatedSkills = [...frontendSkills];
         updatedSkills[editingSkill.index] = formData;
-        updateSkills(updatedSkills, backendSkills);
+        success = await updateSkills(updatedSkills, backendSkills);
       } else {
         const updatedSkills = [...backendSkills];
         updatedSkills[editingSkill.index] = formData;
-        updateSkills(frontendSkills, updatedSkills);
+        success = await updateSkills(frontendSkills, updatedSkills);
       }
     }
 
     setIsSaving(false);
-    handleCancel();
+    
+    if (success) {
+      handleCancel();
+    }
   };
 
   const handleDelete = async (type: 'frontend' | 'backend', index: number) => {
     if (window.confirm('Are you sure you want to delete this skill?')) {
       if (type === 'frontend') {
         const updatedSkills = frontendSkills.filter((_, i) => i !== index);
-        updateSkills(updatedSkills, backendSkills);
+        await updateSkills(updatedSkills, backendSkills);
       } else {
         const updatedSkills = backendSkills.filter((_, i) => i !== index);
-        updateSkills(frontendSkills, updatedSkills);
+        await updateSkills(frontendSkills, updatedSkills);
       }
     }
   };
