@@ -1,6 +1,7 @@
 import React from 'react';
 import { Award, Users, Coffee } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import '../styles/about.css';
 
 const About: React.FC = () => {
   const { personalInfo } = useData();
@@ -19,47 +20,47 @@ const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <p className="text-gray-600 mb-2">Get To Know More</p>
-          <h2 className="text-4xl font-bold text-gray-900">About Me</h2>
+    <section id="about" className="about">
+      <div className="about-container">
+        <div className="about-header">
+          <p className="about-subtitle">Get To Know More</p>
+          <h2 className="about-title">About Me</h2>
         </div>
 
-        <div className="lg:flex lg:items-center lg:space-x-12">
+        <div className="about-content">
           {/* Image */}
-          <div className="flex-shrink-0 mb-12 lg:mb-0">
-            <div className="w-80 h-96 mx-auto lg:mx-0 rounded-2xl overflow-hidden shadow-xl">
+          <div className="about-image-container">
+            <div className="about-image-wrapper">
               <img
                 src={personalInfo.aboutImage}
                 alt="About"
-                className="w-full h-full object-cover"
+                className="about-image"
               />
             </div>
           </div>
 
           {/* Content */}
-          <div className="flex-1">
+          <div className="about-details">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+            <div className="about-stats">
               {stats.map((stat, index) => (
                 <div
                   key={index}
-                  className="bg-gray-50 rounded-xl p-6 text-center border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                  className="about-stat-card"
                 >
-                  <div className="text-blue-600 mb-4 flex justify-center">
+                  <div className="about-stat-icon">
                     {stat.icon}
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  <h3 className="about-stat-title">
                     {stat.title}
                   </h3>
-                  <p className="text-gray-600">{stat.description}</p>
+                  <p className="about-stat-description">{stat.description}</p>
                 </div>
               ))}
             </div>
 
             {/* Description */}
-            <div className="prose prose-lg text-gray-700">
+            <div className="about-description">
               <p>{personalInfo.bio}</p>
             </div>
           </div>

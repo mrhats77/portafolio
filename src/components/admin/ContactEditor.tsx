@@ -31,14 +31,14 @@ const ContactEditor: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center">
-        <Mail className="w-6 h-6 text-blue-600 mr-3" />
-        <h2 className="text-2xl font-bold text-gray-900">Contact Information</h2>
+      <div className="admin-section-header">
+        <Mail />
+        <h2 className="admin-section-title">Contact Information</h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="email" className="form-label">
             Email Address
           </label>
           <input
@@ -48,12 +48,12 @@ const ContactEditor: React.FC = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="form-input"
           />
         </div>
 
-        <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="form-group">
+          <label htmlFor="phone" className="form-label">
             Phone Number
           </label>
           <input
@@ -63,12 +63,12 @@ const ContactEditor: React.FC = () => {
             value={formData.phone}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="form-input"
           />
         </div>
 
-        <div>
-          <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="form-group">
+          <label htmlFor="location" className="form-label">
             Location
           </label>
           <input
@@ -78,25 +78,24 @@ const ContactEditor: React.FC = () => {
             value={formData.location}
             onChange={handleChange}
             required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="form-input"
           />
         </div>
 
-        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-          <div className="flex items-center">
+        <div className="card-footer flex-between">
+          <div>
             {saved && (
-              <div className="flex items-center text-green-600">
-                <div className="w-2 h-2 bg-green-600 rounded-full mr-2"></div>
-                Changes saved successfully
+              <div className="alert alert-success">
+                <p>Changes saved successfully</p>
               </div>
             )}
           </div>
           <button
             type="submit"
             disabled={isSaving}
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn btn-primary"
           >
-            <Save className="w-5 h-5 mr-2" />
+            <Save />
             {isSaving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>

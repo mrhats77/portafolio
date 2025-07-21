@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { contactFormApi } from '../services/api';
 import { useData } from '../context/DataContext';
+import '../styles/contact.css';
 
 const Contact: React.FC = () => {
   const { contactInfo } = useData();
@@ -75,35 +76,35 @@ const Contact: React.FC = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <p className="text-gray-600 mb-2">Get In Touch</p>
-          <h2 className="text-4xl font-bold text-gray-900">Contact Me</h2>
+    <section id="contact" className="contact">
+      <div className="contact-container">
+        <div className="contact-header">
+          <p className="contact-subtitle">Get In Touch</p>
+          <h2 className="contact-title">Contact Me</h2>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="contact-content">
           {/* Contact Information */}
-          <div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-8">
+          <div className="contact-info">
+            <h3 className="contact-info-title">
               Let's work together
             </h3>
-            <p className="text-gray-600 mb-8 text-lg">
+            <p className="contact-info-description">
               I'm always interested in new opportunities and exciting projects. 
               Whether you have a question or just want to say hi, feel free to reach out!
             </p>
 
-            <div className="space-y-6">
+            <div className="contact-info-items">
               {contactInfoItems.map((info, index) => (
                 <a
                   key={index}
                   href={info.href}
-                  className="flex items-center space-x-4 p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow duration-200"
+                  className="contact-info-item"
                 >
-                  <div className="text-blue-600">{info.icon}</div>
-                  <div>
-                    <p className="font-medium text-gray-900">{info.title}</p>
-                    <p className="text-gray-600">{info.value}</p>
+                  <div className="contact-info-icon">{info.icon}</div>
+                  <div className="contact-info-details">
+                    <h4>{info.title}</h4>
+                    <p>{info.value}</p>
                   </div>
                 </a>
               ))}
@@ -111,22 +112,23 @@ const Contact: React.FC = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white rounded-xl border border-gray-200 p-8">
+          <div className="contact-form-container">
+            <div className="contact-form">
             {submitStatus === 'success' && (
-              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-green-800">{submitMessage}</p>
+              <div className="alert alert-success">
+                <p>{submitMessage}</p>
               </div>
             )}
             
             {submitStatus === 'error' && (
-              <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-red-800">{submitMessage}</p>
+              <div className="alert alert-error">
+                <p>{submitMessage}</p>
               </div>
             )}
             
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <form onSubmit={handleSubmit}>
+              <div className="contact-form-group">
+                <label htmlFor="name" className="contact-form-label">
                   Name
                 </label>
                 <input
@@ -137,13 +139,13 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   disabled={isSubmitting}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  className="contact-form-input"
                   placeholder="Your name"
                 />
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="contact-form-group">
+                <label htmlFor="email" className="contact-form-label">
                   Email
                 </label>
                 <input
@@ -154,13 +156,13 @@ const Contact: React.FC = () => {
                   onChange={handleChange}
                   required
                   disabled={isSubmitting}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200"
+                  className="contact-form-input"
                   placeholder="your.email@example.com"
                 />
               </div>
 
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+              <div className="contact-form-group">
+                <label htmlFor="message" className="contact-form-label">
                   Message
                 </label>
                 <textarea
@@ -171,7 +173,7 @@ const Contact: React.FC = () => {
                   required
                   disabled={isSubmitting}
                   rows={5}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 resize-none"
+                  className="contact-form-textarea"
                   placeholder="Tell me about your project..."
                 />
               </div>
@@ -179,12 +181,13 @@ const Contact: React.FC = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="contact-form-button"
               >
                 <Send className="w-5 h-5 mr-2" />
                 {isSubmitting ? 'Sending...' : 'Send Message'}
               </button>
             </form>
+            </div>
           </div>
         </div>
       </div>
