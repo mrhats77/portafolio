@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipModule } from '@angular/material/chip';
+import { MatChipModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { PortfolioService } from '../../shared/services/portfolio.service';
 

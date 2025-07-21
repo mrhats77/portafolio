@@ -38,7 +38,7 @@ import { PortfolioService } from '../../shared/services/portfolio.service';
             <div class="contact-methods">
               <div class="contact-method">
                 <mat-icon>email</mat-icon>
-                <span>john.doe@example.com</span>
+                <span>john.doe&#64;example.com</span>
               </div>
               <div class="contact-method">
                 <mat-icon>phone</mat-icon>
