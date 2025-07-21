@@ -1,0 +1,103 @@
+/* Experience Section Styles */
+.experience {
+  padding: 80px 0;
+  background: #f9fafb;
+}
+
+.experience-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.experience-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.experience-subtitle {
+  color: #6b7280;
+  margin-bottom: 8px;
+  font-size: 16px;
+}
+
+.experience-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.experience-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+.experience-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 32px;
+  transition: box-shadow 0.2s ease;
+}
+
+.experience-card:hover {
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.experience-card-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.experience-skills {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.experience-skill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.experience-skill-icon {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.experience-skill-icon lucide-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.experience-skill-info {
+  flex: 1;
+}
+
+.experience-skill-name {
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 2px;
+}
+
+.experience-skill-level {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+@media (min-width: 768px) {
+  .experience-skills {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .experience-content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
