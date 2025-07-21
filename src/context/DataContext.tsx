@@ -100,34 +100,42 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setError(null);
 
     try {
-      // Fetch all data from API
-      const [personalResponse, projectsResponse, skillsResponse, contactResponse] = await Promise.all([
-        personalInfoApi.get(),
-        projectsApi.getAll(),
-        skillsApi.getAll(),
-        contactInfoApi.get(),
-      ]);
+      // Check if API is available by testing a simple endpoint
+      const testResponse = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/health`);
+      
+      if (testResponse.ok) {
+        // API is available, fetch all data
+        const [personalResponse, projectsResponse, skillsResponse, contactResponse] = await Promise.all([
+          personalInfoApi.get(),
+          projectsApi.getAll(),
+          skillsApi.getAll(),
+          contactInfoApi.get(),
+        ]);
 
-      // Update state with fetched data or keep defaults if API fails
-      if (personalResponse.success && personalResponse.data) {
-        setPersonalInfo(personalResponse.data);
-      }
+        // Update state with fetched data or keep defaults if API fails
+        if (personalResponse.success && personalResponse.data) {
+          setPersonalInfo(personalResponse.data);
+        }
 
-      if (projectsResponse.success && projectsResponse.data) {
-        setProjects(projectsResponse.data);
-      }
+        if (projectsResponse.success && projectsResponse.data) {
+          setProjects(projectsResponse.data);
+        }
 
-      if (skillsResponse.success && skillsResponse.data) {
-        setFrontendSkills(skillsResponse.data.frontend || initialFrontendSkills);
-        setBackendSkills(skillsResponse.data.backend || initialBackendSkills);
-      }
+        if (skillsResponse.success && skillsResponse.data) {
+          setFrontendSkills(skillsResponse.data.frontend || initialFrontendSkills);
+          setBackendSkills(skillsResponse.data.backend || initialBackendSkills);
+        }
 
-      if (contactResponse.success && contactResponse.data) {
-        setContactInfo(contactResponse.data);
+        if (contactResponse.success && contactResponse.data) {
+          setContactInfo(contactResponse.data);
+        }
+      } else {
+        // API not available, use demo data
+        console.log('Backend API not available, using demo data');
       }
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Failed to fetch data from server');
+      // API not available or network error, use demo data silently
+      console.log('Backend API not available, using demo data');
     } finally {
       setLoading(false);
     }
