@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { PortfolioService } from '../../shared/services/portfolio.service';
 
 @Component({
   selector: 'app-experience',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatChipModule, MatIconModule],
+  imports: [CommonModule, MatCardModule, MatChipsModule, MatIconModule],
   template: `
     <section id="experience" class="experience">
       <div class="container">
